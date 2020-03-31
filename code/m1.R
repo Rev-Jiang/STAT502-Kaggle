@@ -31,3 +31,16 @@ rmsle<-function(predictions,actual){
   return(sqrt(t/length(actual)))
 }
 rmsle(abs(m1$fitted.values),house$price)
+
+####generate test file for kaggle submission
+test<-read.csv("/Users/Anesthesia/Desktop/Spring 2020/STAT502/class project/isu-stat-502-sp-2020/test.csv")
+test$property<-NULL
+test$date<-NULL
+#test$date<-as.factor(test$date)
+test$waterfront<-as.factor(test$waterfront)
+test$zipcode<-as.factor(test$zipcode)
+test.pred<-predict.lm(m1,test)
+test.dat<-cbind(1:11613,abs(test.pred))
+colnames(test.dat)<-c("id","price")
+write.csv(test.dat,"/Users/Anesthesia/Desktop/Spring 2020/STAT502/class project/test1.csv",row.names = F)
+
