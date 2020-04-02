@@ -44,3 +44,15 @@ test.dat<-cbind(1:11613,abs(test.pred))
 colnames(test.dat)<-c("id","price")
 write.csv(test.dat,"/Users/Anesthesia/Desktop/Spring 2020/STAT502/class project/test1.csv",row.names = F)
 
+###cross  validation
+folds <- split(sample(nrow(house_process),nrow(house_process),replace=FALSE),as.factor(1:5))
+set.seed(1234)
+ctrl <- trainControl(method = "cv", number = 10, savePred = T)
+fold.accuracy.estimate <- NULL
+for(f in 1:5){
+  trainingData <- house_process[-folds[[f]],]
+  testData <- house_process[folds[[f]],]
+  model_lm <- train(price~., data=trainingData, method="lm",trControl=ctrl)
+fold.accuracy.estimate[f] <- rmsle(abs(model_lm$pred$pred),model_lm$pred$obs)
+}
+mean(fold.accuracy.estimate) 
